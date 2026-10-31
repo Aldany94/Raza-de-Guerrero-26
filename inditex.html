@@ -729,7 +729,7 @@
                 theme: 'purple',
                 title: '¿Guardas amargura o resentimiento porque alguien te traicionó o te falló cuando más lo necesitabas?',
                 script: 'Una traición puede doler profundamente, y es válido necesitar tiempo para sanar. Hablar con alguien de confianza puede ayudarte a procesar lo ocurrido. Puedes cuidar de ti y establecer límites mientras decides cómo seguir adelante.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%204.mp3'
             },
             {
                 id: 'q22',
@@ -1029,6 +1029,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(hiddenShameAudioMigrationKey, 'done');
+            }
+
+            const betrayalAudioMigrationKey = 'refugio_emocional_betrayal_audio_v1';
+            if (localStorage.getItem(betrayalAudioMigrationKey) !== 'done') {
+                const betrayalQuestion = questions.find(question => question.id === 'q21');
+                if (betrayalQuestion && (!betrayalQuestion.audioUrl || betrayalQuestion.audioUrl === 'Audio 4.mp3')) {
+                    betrayalQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q21').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(betrayalAudioMigrationKey, 'done');
             }
         }
 
