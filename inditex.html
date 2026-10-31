@@ -617,7 +617,7 @@
                 theme: 'brand',
                 title: '¿Te cuesta conciliar el sueño por la noche pensando en todo lo que tienes que hacer?',
                 script: 'Cuando la lista de pendientes no te deje dormir, recuerda que no tienes que resolver todo esta noche. Respira despacio, deja para mañana lo que pueda esperar y entrégale a Jesús tus preocupaciones. Él está contigo; permite que tu cuerpo descanse poco a poco.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2019.mp3'
             },
             {
                 id: 'q8',
@@ -1179,6 +1179,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(careerAudioMigrationKey, 'done');
+            }
+
+            const sleepAudioMigrationKey = 'refugio_emocional_sleep_audio_v1';
+            if (localStorage.getItem(sleepAudioMigrationKey) !== 'done') {
+                const sleepQuestion = questions.find(question => question.id === 'q7');
+                if (sleepQuestion && (!sleepQuestion.audioUrl || sleepQuestion.audioUrl === 'Audio 19.mp3')) {
+                    sleepQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q7').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(sleepAudioMigrationKey, 'done');
             }
         }
 
