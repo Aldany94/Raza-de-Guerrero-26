@@ -625,7 +625,7 @@
                 theme: 'purple',
                 title: '¿Te inquieta no saber qué carrera elegir, a qué universidad ir o qué será de tu vida profesional?',
                 script: 'Es válido tener dudas al tomar decisiones importantes. Date tiempo para explorar tus opciones y conversa con personas que puedan orientarte. No necesitas tener todas las respuestas ahora; Jesús te acompaña mientras encuentras tu camino.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2018.mp3'
             },
             {
                 id: 'q9',
@@ -1169,6 +1169,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(plansAudioMigrationKey, 'done');
+            }
+
+            const careerAudioMigrationKey = 'refugio_emocional_career_audio_v1';
+            if (localStorage.getItem(careerAudioMigrationKey) !== 'done') {
+                const careerQuestion = questions.find(question => question.id === 'q8');
+                if (careerQuestion && (!careerQuestion.audioUrl || careerQuestion.audioUrl === 'Audio 18.mp3')) {
+                    careerQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q8').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(careerAudioMigrationKey, 'done');
             }
         }
 
