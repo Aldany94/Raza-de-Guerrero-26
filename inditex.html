@@ -689,7 +689,7 @@
                 theme: 'rose',
                 title: '¿Sientes que la apatía te quitó las ganas de hacer las cosas que antes disfrutabas?',
                 script: 'Perder las ganas de hacer cosas que antes disfrutabas puede ser muy pesado. Empieza con pasos pequeños y cuéntale a alguien de confianza cómo te sientes. Considera buscar apoyo profesional, especialmente si esto persiste o afecta tu vida diaria. No tienes que enfrentarlo sin ayuda.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2010.mp3'
             },
             {
                 id: 'q17',
@@ -1089,6 +1089,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(bodyImageAudioMigrationKey, 'done');
+            }
+
+            const apathyAudioMigrationKey = 'refugio_emocional_apathy_audio_v1';
+            if (localStorage.getItem(apathyAudioMigrationKey) !== 'done') {
+                const apathyQuestion = questions.find(question => question.id === 'q16');
+                if (apathyQuestion && (!apathyQuestion.audioUrl || apathyQuestion.audioUrl === 'Audio 10.mp3')) {
+                    apathyQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q16').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(apathyAudioMigrationKey, 'done');
             }
         }
 
