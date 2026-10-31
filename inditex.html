@@ -697,7 +697,7 @@
                 theme: 'amber',
                 title: '¿Te comparas constantemente con la vida perfecta o los logros de otros en las redes sociales?',
                 script: 'En redes solemos ver solo fragmentos seleccionados de la vida de otras personas, no la historia completa. Tu camino tiene su propio ritmo y valor. Si compararte te hace sentir mal, puedes tomar distancia de esas publicaciones y enfocarte en lo que necesitas.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%208.mp3'
             },
             {
                 id: 'q18',
@@ -1069,6 +1069,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(selfWorthAudioMigrationKey, 'done');
+            }
+
+            const socialComparisonAudioMigrationKey = 'refugio_emocional_social_comparison_audio_v1';
+            if (localStorage.getItem(socialComparisonAudioMigrationKey) !== 'done') {
+                const socialComparisonQuestion = questions.find(question => question.id === 'q17');
+                if (socialComparisonQuestion && (!socialComparisonQuestion.audioUrl || socialComparisonQuestion.audioUrl === 'Audio 8.mp3')) {
+                    socialComparisonQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q17').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(socialComparisonAudioMigrationKey, 'done');
             }
         }
 
