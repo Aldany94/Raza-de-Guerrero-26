@@ -753,7 +753,7 @@
                 theme: 'purple',
                 title: '¿Sientes vergüenza de que Dios o los demás sepan lo que haces a escondidas cuando nadie te ve?',
                 script: 'La vergüenza puede hacerte sentir que debes esconderte, pero puedes buscar ayuda sin tener que cargarlo a solas. Considera hablar con alguien maduro y de confianza que te escuche sin juzgarte. Desde la fe, puedes acercarte a Dios con honestidad y pedir acompañamiento para cambiar.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%203.mp3'
             },
             {
                 id: 'q25',
@@ -1019,6 +1019,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(hiddenSinAudioMigrationKey, 'done');
+            }
+
+            const hiddenShameAudioMigrationKey = 'refugio_emocional_hidden_shame_audio_v1';
+            if (localStorage.getItem(hiddenShameAudioMigrationKey) !== 'done') {
+                const hiddenShameQuestion = questions.find(question => question.id === 'q24');
+                if (hiddenShameQuestion && (!hiddenShameQuestion.audioUrl || hiddenShameQuestion.audioUrl === 'Audio 3.mp3')) {
+                    hiddenShameQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q24').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(hiddenShameAudioMigrationKey, 'done');
             }
         }
 
