@@ -673,7 +673,7 @@
                 theme: 'rose',
                 title: '¿Tienes un dolor en el pecho o ganas de llorar y no entiendes del todo por qué?',
                 script: 'A veces las emociones aparecen sin que sepamos explicar exactamente por qué. No tienes que tener todas las respuestas ahora; intenta hablar con alguien de confianza y tratarte con paciencia. Si el dolor en el pecho es intenso, nuevo o te preocupa, busca atención médica. Jesús te acompaña.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2012.mp3'
             },
             {
                 id: 'q15',
@@ -1109,6 +1109,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(griefAudioMigrationKey, 'done');
+            }
+
+            const sadnessAudioMigrationKey = 'refugio_emocional_sadness_audio_v1';
+            if (localStorage.getItem(sadnessAudioMigrationKey) !== 'done') {
+                const sadnessQuestion = questions.find(question => question.id === 'q14');
+                if (sadnessQuestion && (!sadnessQuestion.audioUrl || sadnessQuestion.audioUrl === 'Audio 12.mp3')) {
+                    sadnessQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q14').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(sadnessAudioMigrationKey, 'done');
             }
         }
 
