@@ -762,6 +762,14 @@
                 title: '¿Sientes que la culpa y los errores ocultos te persiguen y te hacen sentir indigno/a de acercarte a Dios?',
                 script: 'La culpa no significa que seas indigno/a de recibir ayuda o acercarte a Dios. Puedes reconocer lo ocurrido, buscar reparar el daño cuando sea posible y pedir apoyo para seguir adelante. No tienes que resolverlo todo de una vez; da un paso a la vez.',
                 audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%201.mp3'
+            },
+            {
+                id: 'q26',
+                category: 'Ansiedad',
+                theme: 'brand',
+                title: '¿Sientes que la mente no se detiene y que el peso de tus tareas o problemas te supera?',
+                script: 'Cuando sientes que todo se acumula, no tienes que resolverlo todo de golpe. Haz una pausa, elige un paso pequeño y pide apoyo a alguien de confianza. Si esta sensación persiste o afecta tu vida diaria, considera hablar con un profesional. Jesús te acompaña.',
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/d004493a30979f0624a0bd7d6f67d6d319c99f49/Audio%2021.mp3'
             }
         ];
 
@@ -1199,6 +1207,18 @@
                     saveQuestions();
                 }
                 localStorage.setItem(chestAnxietyAudioMigrationKey, 'done');
+            }
+
+            const overwhelmQuestion = DEFAULT_QUESTIONS.find(question => question.id === 'q26');
+            const savedOverwhelmQuestion = questions.find(question =>
+                question.id === overwhelmQuestion.id || question.title === overwhelmQuestion.title
+            );
+            if (!savedOverwhelmQuestion) {
+                questions.push(overwhelmQuestion);
+                saveQuestions();
+            } else if (!savedOverwhelmQuestion.audioUrl || savedOverwhelmQuestion.audioUrl === 'Audio 21.mp3') {
+                savedOverwhelmQuestion.audioUrl = overwhelmQuestion.audioUrl;
+                saveQuestions();
             }
         }
 
