@@ -705,7 +705,7 @@
                 theme: 'amber',
                 title: '¿Sientes que tienes que hacer cosas extraordinarias o complacer a todos para sentir que vales la pena?',
                 script: 'No tienes que ganarte tu valor haciendo cosas extraordinarias ni complaciendo a todo el mundo. Mereces descansar, poner límites y ser querido/a por quien eres. Habla con alguien de confianza si te cuesta creerlo.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%207.mp3'
             },
             {
                 id: 'q19',
@@ -1059,6 +1059,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(resentmentAudioMigrationKey, 'done');
+            }
+
+            const selfWorthAudioMigrationKey = 'refugio_emocional_self_worth_audio_v1';
+            if (localStorage.getItem(selfWorthAudioMigrationKey) !== 'done') {
+                const selfWorthQuestion = questions.find(question => question.id === 'q18');
+                if (selfWorthQuestion && (!selfWorthQuestion.audioUrl || selfWorthQuestion.audioUrl === 'Audio 7.mp3')) {
+                    selfWorthQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q18').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(selfWorthAudioMigrationKey, 'done');
             }
         }
 
