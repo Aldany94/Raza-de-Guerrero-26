@@ -641,7 +641,7 @@
                 theme: 'purple',
                 title: '¿Te da miedo tomar una mala decisión y equivocarte en el rumbo de tu vida?',
                 script: 'Tomar decisiones puede dar miedo, pero no tienes que hacerlo a solas ni de una vez. Reúne información, pide consejo a alguien de confianza y avanza con calma. Si algo no sale como esperabas, puedes aprender y ajustar el rumbo; Jesús te acompaña.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2016.mp3'
             },
             {
                 id: 'q11',
@@ -1149,6 +1149,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(feelingUnderstoodAudioMigrationKey, 'done');
+            }
+
+            const decisionAudioMigrationKey = 'refugio_emocional_decision_audio_v1';
+            if (localStorage.getItem(decisionAudioMigrationKey) !== 'done') {
+                const decisionQuestion = questions.find(question => question.id === 'q10');
+                if (decisionQuestion && (!decisionQuestion.audioUrl || decisionQuestion.audioUrl === 'Audio 16.mp3')) {
+                    decisionQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q10').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(decisionAudioMigrationKey, 'done');
             }
         }
 
