@@ -657,7 +657,7 @@
                 theme: 'teal',
                 title: '¿Te da pavor pasar tiempo a solas y buscas constantemente distracciones para no sentir la soledad?',
                 script: 'Pasar tiempo a solas puede resultar incómodo, pero no tienes que forzarte a sentirte bien de inmediato. Prueba empezar con un momento breve y tranquilo, haciendo algo que disfrutes. Si la soledad pesa mucho, cuéntaselo a alguien cercano; Jesús te acompaña.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2013.mp3'
             },
             {
                 id: 'q13',
@@ -1119,6 +1119,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(sadnessAudioMigrationKey, 'done');
+            }
+
+            const solitudeAudioMigrationKey = 'refugio_emocional_solitude_audio_v1';
+            if (localStorage.getItem(solitudeAudioMigrationKey) !== 'done') {
+                const solitudeQuestion = questions.find(question => question.id === 'q12');
+                if (solitudeQuestion && (!solitudeQuestion.audioUrl || solitudeQuestion.audioUrl === 'Audio 13.mp3')) {
+                    solitudeQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q12').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(solitudeAudioMigrationKey, 'done');
             }
         }
 
