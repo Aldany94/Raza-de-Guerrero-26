@@ -761,7 +761,7 @@
                 theme: 'purple',
                 title: '¿Sientes que la culpa y los errores ocultos te persiguen y te hacen sentir indigno/a de acercarte a Dios?',
                 script: 'La culpa no significa que seas indigno/a de recibir ayuda o acercarte a Dios. Puedes reconocer lo ocurrido, buscar reparar el daño cuando sea posible y pedir apoyo para seguir adelante. No tienes que resolverlo todo de una vez; da un paso a la vez.',
-                audioUrl: ''
+                audioUrl: 'Audio 1.mp3'
             }
         ];
 
@@ -999,6 +999,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(hiddenSinMigrationKey, 'done');
+            }
+
+            const guiltAudioMigrationKey = 'refugio_emocional_guilt_audio_v1';
+            if (localStorage.getItem(guiltAudioMigrationKey) !== 'done') {
+                const guiltQuestion = questions.find(question => question.id === 'q25');
+                if (guiltQuestion && !guiltQuestion.audioUrl) {
+                    guiltQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q25').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(guiltAudioMigrationKey, 'done');
             }
         }
 
