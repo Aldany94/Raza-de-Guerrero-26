@@ -681,7 +681,7 @@
                 theme: 'rose',
                 title: '¿Atraviesas un duelo o la pérdida desgarradora de un ser querido o una relación importante?',
                 script: 'El duelo no tiene un tiempo establecido y cada persona lo vive de manera distinta. Date permiso para extrañar y busca compañía cuando la necesites; no tienes que atravesarlo a solas. Jesús está cerca de ti en medio del dolor.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%2011.mp3'
             },
             {
                 id: 'q16',
@@ -1099,6 +1099,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(apathyAudioMigrationKey, 'done');
+            }
+
+            const griefAudioMigrationKey = 'refugio_emocional_grief_audio_v1';
+            if (localStorage.getItem(griefAudioMigrationKey) !== 'done') {
+                const griefQuestion = questions.find(question => question.id === 'q15');
+                if (griefQuestion && (!griefQuestion.audioUrl || griefQuestion.audioUrl === 'Audio 11.mp3')) {
+                    griefQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q15').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(griefAudioMigrationKey, 'done');
             }
         }
 
