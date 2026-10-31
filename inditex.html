@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinica del alma - Tu Espacio de Calma</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        calm: {
+                            purple: '#a855f7',
+                            teal: '#14b8a6',
+                            rose: '#f43f5e',
+                            amber: '#f59e0b',
+                            indigo: '#6366f1'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* Custom animations & visually soothing gradients */
+        .gradient-bg {
+            min-height: 100vh;
+            position: relative;
+            isolation: isolate;
+            background-color: transparent;
+        }
+        .gradient-bg::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background-color: #fafafa;
+            background-image: url("BACK_WEB-1920x1080-2.png");
+            background-position: center 60%;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        @media (max-width: 767px) {
+            .gradient-bg::before {
+                background-image: url("BACK_WEB-1080x1920.png");
+            }
+        }
+        body {
+            color: #fff;
+        }
+        body [class*="text-"],
+        body [class*="text-"]:hover {
+            color: #fff;
+        }
+        body .category-filter-button {
+            color: #fff;
+            background-color: rgba(0, 208, 0, 0.14);
+            border: 1px solid #00d000;
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        body .category-filter-button:hover {
+            background-color: rgba(0, 208, 0, 0.3);
+        }
+        body .category-filter-button.is-active {
+            color: #fff;
+            background-color: #00d000;
+            border-color: #00d000;
+            box-shadow: 0 4px 12px rgba(0, 208, 0, 0.25);
+        }
+        body .category-filter-button.is-active.is-all {
+            background: linear-gradient(90deg, #057502, #36bf00);
+            border-color: transparent;
+        }
+        body .question-card [class*="text-"],
+        body .question-card [class*="text-"]:hover {
+            color: #fff;
+        }
+        body .question-card {
+            background-color: rgba(5, 117, 2, 0.18);
+        }
+        body .question-card:hover {
+            background-color: rgba(5, 117, 2, 0.28);
+        }
+        #adminPanelModal .text-brand-400 {
+            color: #36bf00;
+        }
+        #adminPanelModal .bg-brand-500\/20 {
+            background-color: rgba(5, 117, 2, 0.2);
+        }
+        #adminPanelModal input:focus,
+        #adminPanelModal select:focus,
+        #adminPanelModal textarea:focus {
+            border-color: #36bf00;
+        }
+        #formAudioFile::file-selector-button {
+            background: rgba(5, 117, 2, 0.2);
+            color: #36bf00;
+        }
+        #formAudioFile:hover::file-selector-button {
+            background: rgba(5, 117, 2, 0.35);
+        }
+        .admin-green-gradient {
+            background: linear-gradient(90deg, #057502, #36bf00);
+            box-shadow: 0 4px 12px rgba(5, 117, 2, 0.3);
+        }
+        .admin-green-gradient:hover {
+            filter: brightness(1.1);
+        }
+        #adminPanelModal > div {
+            border-color: rgba(54, 191, 0, 0.35);
+        }
+        body h1[class*="text-"],
+        body h2[class*="text-"],
+        body h3[class*="text-"],
+        body h4[class*="text-"],
+        body h5[class*="text-"],
+        body h6[class*="text-"],
+        body h1[class*="text-"]:hover,
+        body h2[class*="text-"]:hover,
+        body h3[class*="text-"]:hover,
+        body h4[class*="text-"]:hover,
+        body h5[class*="text-"]:hover,
+        body h6[class*="text-"]:hover {
+            color: #fff;
+        }
+        body main h2.hero-title,
+        body main p.hero-description {
+            color: #fff !important;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(244, 255, 255, 0.25);
+        }
+        .waveform-bar {
+            transition: height 0.15s ease;
+        }
+        .site-header .header-inner {
+            transition: height 0.2s ease;
+        }
+        .site-header .header-title,
+        .site-header .header-subtitle {
+            color: #fff;
+        }
+        .site-header .header-copy {
+            width: max-content;
+            max-width: calc(100vw - 200px);
+        }
+        .site-header .header-logo,
+        .site-header .header-title,
+        .site-header .header-subtitle {
+            transition: all 0.2s ease;
+        }
+        .site-header .header-subtitle {
+            max-height: 1rem;
+        }
+        .site-header.is-compact .header-inner {
+            height: 3.5rem;
+        }
+        .site-header.is-compact .header-logo {
+            height: 2.5rem;
+        }
+        .site-header.is-compact .header-title {
+            font-size: 1rem;
+        }
+        .site-header.is-compact .header-subtitle {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .site-header .header-inner,
+            .site-header .header-logo,
+            .site-header .header-title,
+            .site-header .header-subtitle {
+                transition: none;
+            }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #ffffff;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ffffff;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b4b4b4;
+        }
+    </style>
+</head>
+<body class="h-full gradient-bg font-sans antialiased flex flex-col justify-between selection:bg-brand-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="site-header border-b border-slate-800/80 backdrop-blur-md bg-slate-900/60 sticky top-0 z-40">
+        <div class="header-inner max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-center">
+            <div class="flex items-center gap-3">
+                <img class="header-logo h-12 w-auto max-w-[140px] object-contain" src="RDG_LOGO.png" alt="Radio Guerreros">
+                <div class="header-copy text-center">
+                    <h1 class="header-title w-full text-xl font-bold">
+                        UNA CONVERSACIÓN CON JESÚS
+                    </h1>
+                    <p class="header-subtitle w-full text-xs text-slate-400">Tu espacio seguro para escuchar y desahogarte</p>
+                </div>
+            </div>
+
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        
+        <!-- Welcome Hero Banner -->
+        <section class="mb-10 text-center max-w-3xl mx-auto space-y-4">
+            <span class="px-3.5 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold tracking-wide uppercase">
+                JESÚS TE QUIERE ESCUCHAR
+            </span>
+            <h2 class="hero-title text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                ¿Cómo te sientes en este momento?
+            </h2>
+            <p class="hero-description text-base sm:text-lg leading-relaxed">
+                <strong>Selecciona la situación o el pensamiento que mejor describe lo que estás viviendo hoy.</strong>
+                Hemos preparado algo especiales llenos de la palabra de Dios para ti, donde es Jesús mismo quien te habla al corazón a través de su verdad.
+            </p>
+        </section>
+
+        <!-- Category Filters -->
+        <section class="mb-8">
+            <div id="categoryFilters" class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                <!-- Dynamic categories injected here -->
+            </div>
+        </section>
+
+        <!-- Questions Grid -->
+        <section class="mb-12">
+            <div id="questionsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                <!-- Dynamic Question Cards injected here -->
+            </div>
+            
+            <!-- Empty state -->
+            <div id="noQuestionsState" class="hidden text-center py-16 bg-slate-800/30 rounded-3xl border border-slate-800">
+                <i data-lucide="ghost" class="w-12 h-12 text-slate-500 mx-auto mb-3"></i>
+                <h3 class="text-lg font-medium text-slate-300">No hay preguntas disponibles en esta categoría</h3>
+                <p class="text-sm text-slate-500 mt-1">Prueba seleccionando otra categoría arriba.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/80 bg-slate-950/40 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col items-center gap-4">
+            <p class="text-center text-white text-base sm:text-lg">¡Ey, recuerda que jamás estás solo/a! Aunque sientas que nadie te entiende, Jesús camina contigo en medio de cualquier tormenta. Él mismo prometió: «No te desampararé, ni te dejaré» (Hebreos 13:5).</p>
+            <p class="text-slate-400">JUVENVISIÓN &copy; 2026</p>
+        </div>
+        <button id="adminBtn" class="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/60 transition-all text-sm font-medium">
+            <i data-lucide="shield-lock" class="w-4 h-4 text-brand-400"></i>
+            <span>Administración</span>
+        </button>
+    </footer>
+
+    <!-- Audio Player Modal Card -->
+    <div id="audioModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4 overflow-y-auto transition-opacity duration-300 opacity-0">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg max-h-[calc(100vh-2rem)] overflow-y-auto rounded-3xl p-6 sm:p-8 shadow-2xl relative glow-effect transform transition-transform scale-95 duration-300" id="audioModalCard">
+            <!-- Close button -->
+            <button id="closeAudioModalBtn" class="absolute top-5 right-5 p-2 text-slate-400 hover:text-white bg-slate-800/50 hover:bg-slate-800 rounded-full transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <!-- Question Info -->
+            <div class="text-center space-y-2 mb-6">
+                <span id="modalCategoryBadge" class="inline-block px-3 py-1 rounded-full text-xs font-medium bg-brand-500/10 text-brand-400 border border-brand-500/20">
+                    Ansiedad
+                </span>
+                <h3 id="modalQuestionTitle" class="text-xl sm:text-2xl font-bold text-white">
+                    "Siento mucha presión y ansiedad"
+                </h3>
+            </div>
+
+            <!-- Custom Waveform Visualizer -->
+            <div class="bg-slate-950/70 rounded-2xl p-6 mb-6 border border-slate-800/80 flex flex-col items-center justify-center">
+                <div id="waveformContainer" class="flex items-center justify-center gap-1.5 h-16 w-full px-4">
+                    <!-- Dynamic Waveform Bars Generated by JS -->
+                </div>
+                <div class="flex justify-between w-full text-xs text-slate-400 font-mono mt-3 px-1">
+                    <span id="currentTimeDisplay">00:00</span>
+                    <span id="durationDisplay">00:00</span>
+                </div>
+            </div>
+
+            <!-- Progress Bar / Seek Slider -->
+            <div class="mb-6 px-1">
+                <input type="range" id="seekBar" min="0" max="100" value="0" step="0.1"
+                       class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-500 focus:outline-none">
+            </div>
+
+            <!-- Primary Playback Controls -->
+            <div class="flex items-center justify-center gap-4 sm:gap-6 mb-6">
+                <!-- Replay 10s -->
+                <button id="replay10Btn" title="Retroceder 10 segundos" class="p-3 text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 rounded-full transition">
+                    <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Play/Pause Toggle -->
+                <button id="playPauseBtn" class="p-5 bg-gradient-to-r from-brand-500 to-calm-indigo hover:from-brand-600 hover:to-indigo-600 text-white rounded-full shadow-lg shadow-brand-500/30 transition transform hover:scale-105 active:scale-95">
+                    <i data-lucide="play" id="playIcon" class="w-8 h-8 fill-current"></i>
+                    <i data-lucide="pause" id="pauseIcon" class="w-8 h-8 fill-current hidden"></i>
+                </button>
+
+                <!-- Speed Toggle Button -->
+                <button id="speedBtn" class="px-3.5 py-2 text-xs font-bold text-slate-400 hover:text-white bg-slate-800/60 hover:bg-slate-800 rounded-xl transition border border-slate-700/50">
+                    1.0x
+                </button>
+            </div>
+
+            <!-- Secondary Controls (Volume) -->
+            <div class="flex items-center justify-center gap-3 bg-slate-950/40 py-2.5 px-4 rounded-xl border border-slate-800/50 max-w-xs mx-auto">
+                <i data-lucide="volume-2" id="volumeIcon" class="w-4 h-4 text-slate-400"></i>
+                <input type="range" id="volumeSlider" min="0" max="1" step="0.05" value="1"
+                       class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-500 focus:outline-none">
+            </div>
+
+            <section class="mt-8 pt-6 border-t border-slate-800">
+                <h4 class="text-lg font-bold text-white mb-2">Comparte cómo te sientes</h4>
+                <p class="text-xs text-slate-300 mb-4">Tu comentario se enviará de forma privada al equipo y no será visible para otros visitantes. No incluyas información que no quieras compartir.</p>
+                <form id="commentForm" class="space-y-4">
+                    <div>
+                        <label for="commentName" class="block text-sm text-slate-300 mb-1">Nombre y apellido</label>
+                        <input id="commentName" type="text" required minlength="2" maxlength="120" autocomplete="name"
+                               class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500"
+                               placeholder="Escribe tu nombre y apellido">
+                    </div>
+                    <div>
+                        <label for="commentText" class="block text-sm text-slate-300 mb-1">Comentario</label>
+                        <textarea id="commentText" rows="3" maxlength="3000"
+                                  class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500 resize-y"
+                                  placeholder="Cuéntanos cómo te sientes (opcional si grabas audio)"></textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-xs text-slate-400">O graba un audio (máximo 60 segundos).</p>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button id="startCommentRecordingBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-sm transition">
+                                <i data-lucide="mic" class="w-4 h-4 inline-block mr-1"></i>Grabar audio
+                            </button>
+                            <button id="stopCommentRecordingBtn" type="button" disabled class="px-4 py-2 rounded-xl bg-slate-800 text-slate-400 text-sm transition disabled:opacity-50">
+                                Detener
+                            </button>
+                            <span id="commentRecordingStatus" class="text-xs text-slate-400" aria-live="polite"></span>
+                        </div>
+                        <audio id="commentAudioPreview" controls class="hidden w-full"></audio>
+                    </div>
+                    <label class="flex items-start gap-2 text-xs text-slate-300">
+                        <input id="commentConsent" type="checkbox" required class="mt-0.5 accent-brand-500">
+                        <span>Entiendo que mi nombre y comentario o grabación se enviarán de forma privada al equipo responsable.</span>
+                    </label>
+                    <button id="submitCommentBtn" type="submit" class="admin-green-gradient w-full px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition">
+                        Enviar comentario privado
+                    </button>
+                    <p id="commentFormStatus" role="status" aria-live="polite" class="hidden text-sm"></p>
+                </form>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Admin Pin Verification Modal -->
+    <div id="adminPinModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-3xl p-6 sm:p-8 shadow-2xl text-center space-y-4">
+            <div class="w-12 h-12 bg-slate-800 text-brand-400 rounded-2xl flex items-center justify-center mx-auto border border-slate-700">
+                <i data-lucide="key-round" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-white">Acceso Administrativo</h3>
+            <p class="text-xs text-slate-400">Ingresa el PIN de seguridad para gestionar los audios y las preguntas.</p>
+            
+            <form id="pinForm" class="space-y-4">
+                <div>
+                    <input type="password" id="pinInput" placeholder="Ingresa tu clave de acceso" autocomplete="off"
+                           class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-center text-lg text-white font-mono tracking-widest focus:outline-none focus:border-brand-500">
+                    <p id="pinError" class="text-xs text-rose-400 mt-1 hidden">Clave incorrecta. Intenta de nuevo.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" id="cancelPinBtn" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-medium transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="flex-1 py-2.5 bg-gradient-to-r from-[#057502] to-[#36bf00] hover:brightness-110 text-white rounded-xl text-sm font-medium transition">
+                        Entrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel Drawer / Modal -->
+    <div id="adminPanelModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-lg z-50 hidden flex items-center justify-center p-2 sm:p-6 overflow-y-auto">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-3xl shadow-2xl flex flex-col max-h-[92vh] my-auto">
+            
+            <!-- Panel Header -->
+            <div class="p-6 border-b border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 bg-brand-500/20 text-brand-400 rounded-xl">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Panel de Administración</h2>
+                        <p class="text-xs text-slate-400">Gestiona las preguntas, categorías y audios de respuesta</p>
+                    </div>
+                </div>
+                <button id="closeAdminPanelBtn" class="p-2 text-slate-400 hover:text-white bg-slate-800 rounded-xl transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Panel Body -->
+            <div class="p-6 overflow-y-auto space-y-8 flex-1">
+                
+                <!-- Action / Form Section -->
+                <div class="bg-slate-950/60 p-5 sm:p-6 rounded-2xl border border-slate-800 space-y-4">
+                    <h3 id="formTitle" class="text-base font-semibold text-white flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-brand-400"></i>
+                        <span>Agregar Nueva Pregunta / Audio</span>
+                    </h3>
+
+                    <form id="questionForm" class="space-y-4">
+                        <input type="hidden" id="editQuestionId" value="">
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <!-- Category Select / Input -->
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Categoría / Estado de ánimo</label>
+                                <input type="text" id="formCategory" list="categoriesList" required placeholder="Ej: Ansiedad, Soledad, Futuro"
+                                       class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500">
+                                <datalist id="categoriesList">
+                                    <option value="Ansiedad"></option>
+                                    <option value="Tristeza"></option>
+                                    <option value="Soledad"></option>
+                                    <option value="Futuro"></option>
+                                    <option value="Autoestima"></option>
+                                    <option value="Falta de perdón"></option>
+                                    <option value="Pecados ocultos"></option>
+                                </datalist>
+                            </div>
+
+                            <!-- Color Theme Selection -->
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Tema Visual</label>
+                                <select id="formTheme" class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500">
+                                    <option value="brand">Azul Calma</option>
+                                    <option value="purple">Púrpura Reflexión</option>
+                                    <option value="teal">Verde Serenidad</option>
+                                    <option value="rose">Rosa Empatía</option>
+                                    <option value="amber">Ámbar Calidez</option>
+                                </select>
+                            </div>
+
+                            <!-- Title Input -->
+                            <div class="md:col-span-1">
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Título de la Pregunta</label>
+                                <input type="text" id="formTitleInput" required placeholder="Ej: Siento mucha presión por los exámenes"
+                                       class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+
+                        <!-- Speech / Guidance Script Text for Fallback TTS -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1">
+                                Mensaje de Guía en Texto 
+                                <span class="text-slate-500 text-[11px] font-normal">(Se utilizará para lectura en voz alta si no se sube audio)</span>
+                            </label>
+                            <textarea id="formScript" rows="2" required placeholder="Escribe el mensaje reconfortante que se leerá al usuario..."
+                                      class="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500 resize-none"></textarea>
+                        </div>
+
+                        <!-- Custom Audio File Upload or URL -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-800">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Cargar Archivo de Audio (MP3, WAV)</label>
+                                <input type="file" id="formAudioFile" accept="audio/*"
+                                       class="w-full text-xs text-slate-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold cursor-pointer">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">o Enlace URL de Audio Directo</label>
+                                <input type="url" id="formAudioUrl" placeholder="https://ejemplo.com/audio.mp3"
+                                       class="w-full px-3.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-brand-500">
+                            </div>
+                        </div>
+
+                        <!-- Form Buttons -->
+                        <div class="flex items-center justify-end gap-3 pt-2">
+                            <button type="button" id="cancelEditBtn" class="hidden px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium">
+                                Cancelar Edición
+                            </button>
+                            <button type="submit" id="saveQuestionBtn" class="admin-green-gradient px-5 py-2.5 text-white rounded-xl text-sm font-semibold shadow-md shadow-brand-500/20 transition flex items-center gap-2">
+                                <i data-lucide="check" class="w-4 h-4"></i>
+                                <span>Guardar Pregunta</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Admin Questions Table -->
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-semibold text-white">Listado de Preguntas ({count})</h3>
+                        <button id="resetDefaultsBtn" class="text-xs text-slate-400 hover:text-amber-400 underline flex items-center gap-1">
+                            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                            Restablecer predeterminados
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto rounded-2xl border border-slate-800">
+                        <table class="w-full text-left text-sm text-slate-300">
+                            <thead class="bg-slate-950 text-xs text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                                <tr>
+                                    <th class="px-4 py-3">Categoría</th>
+                                    <th class="px-4 py-3">Pregunta</th>
+                                    <th class="px-4 py-3">Tipo de Audio</th>
+                                    <th class="px-4 py-3 text-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminTableBody" class="divide-y divide-slate-800/60 bg-slate-900/50">
+                                <!-- Dynamic admin rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic Script -->
+    <script>
+        const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY';
+        const SUPABASE_COMMENTS_BUCKET = 'private-comments';
+        let supabaseClient = null;
+        let commentRecorder = null;
+        let commentRecordingStream = null;
+        let commentRecordingTimer = null;
+        let recordedCommentAudio = null;
+        let commentAudioPreviewUrl = null;
+
+        // Default Seed Questions
+        const DEFAULT_QUESTIONS = [
+            {
+                id: 'q1',
+                category: 'Ansiedad',
+                theme: 'brand',
+                title: '¿Sientes que la preocupación, el estrés o los nervios te ahogan y no te dejan en paz?',
+                script: 'Cuando la preocupación y el estrés parezcan abrumarte, haz una pausa y respira con calma. No tienes que resolverlo todo en este instante. Jesús conoce lo que llevas en el corazón y permanece contigo; puedes entregarle tus preocupaciones y dar un paso a la vez.',
+                audioUrl: ''
+            },
+            {
+                id: 'q2',
+                category: 'Futuro',
+                theme: 'purple',
+                title: '¿Te da miedo lo que vendrá mañana, no saber qué estudiar, o sentir incertidumbre por el rumbo de tu vida?',
+                script: 'No tienes que resolver todo tu futuro hoy. Avanza paso a paso y busca consejo en personas de confianza. Aunque no sepas qué viene mañana, Jesús está contigo en cada etapa.',
+                audioUrl: ''
+            },
+            {
+                id: 'q3',
+                category: 'Soledad',
+                theme: 'teal',
+                title: '¿Sientes que aunque estás rodeado/a de gente o amigos, nadie te conoce ni te comprende de verdad?',
+                script: 'Sentirte solo/a incluso cuando estás rodeado/a de personas puede ser difícil. Lo que sientes importa y mereces que te escuchen. Intenta compartirlo con alguien de confianza; Jesús te conoce y permanece a tu lado.',
+                audioUrl: ''
+            },
+            {
+                id: 'q4',
+                category: 'Tristeza',
+                theme: 'rose',
+                title: '¿Hay un nudo en la garganta o un dolor profundo en tu pecho que te apaga las ganas de sonreír?',
+                script: 'Siento que estés pasando por un momento así. No tienes que fingir que estás bien: date permiso para sentir y busca a alguien de confianza con quien hablar. Si el dolor en el pecho es intenso, nuevo o te preocupa, busca atención médica. Jesús está contigo y puedes avanzar poco a poco.',
+                audioUrl: ''
+            },
+            {
+                id: 'q5',
+                category: 'Autoestima',
+                theme: 'amber',
+                title: '¿Te miras al espejo y te cuesta aceptar tu cuerpo, tu físico o la forma en que te ves?',
+                script: 'Tu valor no depende de tu apariencia ni de cumplir con un ideal. Intenta hablarte con la misma amabilidad que ofrecerías a alguien que quieres. Si estos pensamientos te hacen sufrir, considera compartirlo con una persona de confianza.',
+                audioUrl: ''
+            },
+            {
+                id: 'q6',
+                category: 'Ansiedad',
+                theme: 'brand',
+                title: '¿Sientes opresión en el pecho, falta de aire o un miedo constante sin razón aparente?',
+                script: 'Si sientes opresión en el pecho o falta de aire, busca ayuda médica si los síntomas son intensos, nuevos o te preocupan. No tienes que atravesar este momento a solas: acércate a alguien de confianza. Jesús camina contigo y puedes pedirle calma mientras recibes el apoyo que necesitas.',
+                audioUrl: ''
+            },
+            {
+                id: 'q7',
+                category: 'Ansiedad',
+                theme: 'brand',
+                title: '¿Te cuesta conciliar el sueño por la noche pensando en todo lo que tienes que hacer?',
+                script: 'Cuando la lista de pendientes no te deje dormir, recuerda que no tienes que resolver todo esta noche. Respira despacio, deja para mañana lo que pueda esperar y entrégale a Jesús tus preocupaciones. Él está contigo; permite que tu cuerpo descanse poco a poco.',
+                audioUrl: ''
+            },
+            {
+                id: 'q8',
+                category: 'Futuro',
+                theme: 'purple',
+                title: '¿Te inquieta no saber qué carrera elegir, a qué universidad ir o qué será de tu vida profesional?',
+                script: 'Es válido tener dudas al tomar decisiones importantes. Date tiempo para explorar tus opciones y conversa con personas que puedan orientarte. No necesitas tener todas las respuestas ahora; Jesús te acompaña mientras encuentras tu camino.',
+                audioUrl: ''
+            },
+            {
+                id: 'q9',
+                category: 'Futuro',
+                theme: 'purple',
+                title: '¿Sientes frustración porque los planes que tenías para este año no salieron como esperabas?',
+                script: 'Es comprensible sentir frustración cuando las cosas no salen como las planeaste. Permítete sentirlo y, cuando estés listo, piensa en un paso pequeño que sí puedas dar. Un cambio de planes no define tu valor ni cierra todas las posibilidades. Jesús sigue contigo.',
+                audioUrl: ''
+            },
+            {
+                id: 'q10',
+                category: 'Futuro',
+                theme: 'purple',
+                title: '¿Te da miedo tomar una mala decisión y equivocarte en el rumbo de tu vida?',
+                script: 'Tomar decisiones puede dar miedo, pero no tienes que hacerlo a solas ni de una vez. Reúne información, pide consejo a alguien de confianza y avanza con calma. Si algo no sale como esperabas, puedes aprender y ajustar el rumbo; Jesús te acompaña.',
+                audioUrl: ''
+            },
+            {
+                id: 'q11',
+                category: 'Soledad',
+                theme: 'teal',
+                title: '¿Te duele cuando tus amigos se alejan o sientes que te han dejado de lado en el grupo?',
+                script: 'Duele sentir que tus amistades se alejan o te dejan de lado. Tus sentimientos son válidos; puedes hablar con alguien de confianza sobre lo que está pasando. Mereces relaciones donde te sientas valorado/a, y Jesús está contigo en este momento.',
+                audioUrl: ''
+            },
+            {
+                id: 'q12',
+                category: 'Soledad',
+                theme: 'teal',
+                title: '¿Te da pavor pasar tiempo a solas y buscas constantemente distracciones para no sentir la soledad?',
+                script: 'Pasar tiempo a solas puede resultar incómodo, pero no tienes que forzarte a sentirte bien de inmediato. Prueba empezar con un momento breve y tranquilo, haciendo algo que disfrutes. Si la soledad pesa mucho, cuéntaselo a alguien cercano; Jesús te acompaña.',
+                audioUrl: ''
+            },
+            {
+                id: 'q13',
+                category: 'Soledad',
+                theme: 'teal',
+                title: '¿A veces sientes que nadie te comprende, que estás remando contra corriente o que caminas completamente solo/a?',
+                script: 'Cuando sientes que avanzas contra corriente, recuerda que no tienes que cargar con todo a solas. Busca a una persona de confianza y comparte cómo te sientes. Aunque ahora parezca difícil, hay apoyo para ti; Jesús camina contigo.',
+                audioUrl: ''
+            },
+            {
+                id: 'q14',
+                category: 'Tristeza',
+                theme: 'rose',
+                title: '¿Tienes un dolor en el pecho o ganas de llorar y no entiendes del todo por qué?',
+                script: 'A veces las emociones aparecen sin que sepamos explicar exactamente por qué. No tienes que tener todas las respuestas ahora; intenta hablar con alguien de confianza y tratarte con paciencia. Si el dolor en el pecho es intenso, nuevo o te preocupa, busca atención médica. Jesús te acompaña.',
+                audioUrl: ''
+            },
+            {
+                id: 'q15',
+                category: 'Tristeza',
+                theme: 'rose',
+                title: '¿Atraviesas un duelo o la pérdida desgarradora de un ser querido o una relación importante?',
+                script: 'El duelo no tiene un tiempo establecido y cada persona lo vive de manera distinta. Date permiso para extrañar y busca compañía cuando la necesites; no tienes que atravesarlo a solas. Jesús está cerca de ti en medio del dolor.',
+                audioUrl: ''
+            },
+            {
+                id: 'q16',
+                category: 'Tristeza',
+                theme: 'rose',
+                title: '¿Sientes que la apatía te quitó las ganas de hacer las cosas que antes disfrutabas?',
+                script: 'Perder las ganas de hacer cosas que antes disfrutabas puede ser muy pesado. Empieza con pasos pequeños y cuéntale a alguien de confianza cómo te sientes. Considera buscar apoyo profesional, especialmente si esto persiste o afecta tu vida diaria. No tienes que enfrentarlo sin ayuda.',
+                audioUrl: ''
+            },
+            {
+                id: 'q17',
+                category: 'Autoestima',
+                theme: 'amber',
+                title: '¿Te comparas constantemente con la vida perfecta o los logros de otros en las redes sociales?',
+                script: 'En redes solemos ver solo fragmentos seleccionados de la vida de otras personas, no la historia completa. Tu camino tiene su propio ritmo y valor. Si compararte te hace sentir mal, puedes tomar distancia de esas publicaciones y enfocarte en lo que necesitas.',
+                audioUrl: ''
+            },
+            {
+                id: 'q18',
+                category: 'Autoestima',
+                theme: 'amber',
+                title: '¿Sientes que tienes que hacer cosas extraordinarias o complacer a todos para sentir que vales la pena?',
+                script: 'No tienes que ganarte tu valor haciendo cosas extraordinarias ni complaciendo a todo el mundo. Mereces descansar, poner límites y ser querido/a por quien eres. Habla con alguien de confianza si te cuesta creerlo.',
+                audioUrl: ''
+            },
+            {
+                id: 'q19',
+                category: 'Autoestima',
+                theme: 'amber',
+                title: '¿Te cuesta aceptarte, te comparas mucho con los demás o sientes que no eres suficiente?',
+                script: 'Es difícil cuando la comparación te hace sentir que no eres suficiente. Trata de reconocer una cualidad o un esfuerzo propio, por pequeño que parezca. Tu valor no depende de ser igual a otra persona; mereces tratarte con respeto y paciencia.',
+                audioUrl: ''
+            },
+            {
+                id: 'q20',
+                category: 'Falta de perdón',
+                theme: 'purple',
+                title: '¿Sientes que el rencor o el enojo hacia alguien te está quemando por dentro y te cuesta mucho perdonarlo/a?',
+                script: 'El enojo y el rencor pueden pesar mucho. No tienes que apresurarte a perdonar ni minimizar lo que pasó. Date tiempo para procesarlo y busca apoyo de alguien de confianza. Perdonar no significa justificar el daño ni renunciar a poner límites.',
+                audioUrl: ''
+            },
+            {
+                id: 'q21',
+                category: 'Falta de perdón',
+                theme: 'purple',
+                title: '¿Guardas amargura o resentimiento porque alguien te traicionó o te falló cuando más lo necesitabas?',
+                script: 'Una traición puede doler profundamente, y es válido necesitar tiempo para sanar. Hablar con alguien de confianza puede ayudarte a procesar lo ocurrido. Puedes cuidar de ti y establecer límites mientras decides cómo seguir adelante.',
+                audioUrl: ''
+            },
+            {
+                id: 'q22',
+                category: 'Falta de perdón',
+                theme: 'purple',
+                title: '¿Te cuesta perdonarte a ti mismo/a por un error del pasado y sigues cargando con esa culpa?',
+                script: 'Reconocer un error puede ser doloroso, pero no tienes que quedar definido/a por lo que pasó. Si es posible, considera reparar el daño y aprender de la experiencia. Trátate con paciencia y busca apoyo; también mereces la oportunidad de seguir adelante.',
+                audioUrl: ''
+            },
+            {
+                id: 'q23',
+                category: 'Pecados ocultos',
+                theme: 'purple',
+                title: '¿Te sientes atrapado/a en un hábito o pecado secreto que temes que los demás descubran?',
+                script: 'Sentirte atrapado/a en un hábito puede ser difícil, pero no tienes que enfrentarlo sin apoyo. Hablar con una persona confiable, un consejero o un profesional puede ayudarte a dar pasos seguros y concretos. Tu dignidad no desaparece por estar luchando.',
+                audioUrl: ''
+            },
+            {
+                id: 'q24',
+                category: 'Pecados ocultos',
+                theme: 'purple',
+                title: '¿Sientes vergüenza de que Dios o los demás sepan lo que haces a escondidas cuando nadie te ve?',
+                script: 'La vergüenza puede hacerte sentir que debes esconderte, pero puedes buscar ayuda sin tener que cargarlo a solas. Considera hablar con alguien maduro y de confianza que te escuche sin juzgarte. Desde la fe, puedes acercarte a Dios con honestidad y pedir acompañamiento para cambiar.',
+                audioUrl: ''
+            },
+            {
+                id: 'q25',
+                category: 'Pecados ocultos',
+                theme: 'purple',
+                title: '¿Sientes que la culpa y los errores ocultos te persiguen y te hacen sentir indigno/a de acercarte a Dios?',
+                script: 'La culpa no significa que seas indigno/a de recibir ayuda o acercarte a Dios. Puedes reconocer lo ocurrido, buscar reparar el daño cuando sea posible y pedir apoyo para seguir adelante. No tienes que resolverlo todo de una vez; da un paso a la vez.',
+                audioUrl: ''
+            }
+        ];
+
+        // Global State variables
+        let questions = [];
+        let currentCategory = 'Todas';
+        let activeQuestion = null;
+        let audioObject = new Audio();
+        let isPlaying = false;
+        let playbackSpeed = 1.0;
+        let isTTSActive = false;
+        let currentUtterance = null;
+        let waveformInterval = null;
+
+        // Color theme mapping
+        const THEME_MAP = {
+            brand: { bg: 'bg-white/10 hover:bg-white/20', border: 'border-sky-500/30', text: 'text-sky-400', badgeBg: 'bg-sky-500/20 text-sky-300' },
+            purple: { bg: 'bg-white/10 hover:bg-white/20', border: 'border-purple-500/30', text: 'text-purple-400', badgeBg: 'bg-purple-500/20 text-purple-300' },
+            teal: { bg: 'bg-white/10 hover:bg-white/20', border: 'border-teal-500/30', text: 'text-teal-400', badgeBg: 'bg-teal-500/20 text-teal-300' },
+            rose: { bg: 'bg-white/10 hover:bg-white/20', border: 'border-rose-500/30', text: 'text-rose-400', badgeBg: 'bg-rose-500/20 text-rose-300' },
+            amber: { bg: 'bg-white/10 hover:bg-white/20', border: 'border-amber-500/30', text: 'text-amber-400', badgeBg: 'bg-amber-500/20 text-amber-300' }
+        };
+
+        // DOM Elements Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            initializeSupabaseComments();
+            setupCompactHeader();
+            loadQuestions();
+            renderCategoryFilters();
+            renderQuestions();
+            setupAudioEvents();
+            setupEventListeners();
+            initWaveformBars();
+        });
+
+        function setupCompactHeader() {
+            const header = document.querySelector('.site-header');
+            const updateHeader = () => header.classList.toggle('is-compact', window.scrollY > 20);
+
+            updateHeader();
+            window.addEventListener('scroll', updateHeader, { passive: true });
+        }
+
+        // Load Questions from LocalStorage
+        function loadQuestions() {
+            const saved = localStorage.getItem('refugio_emocional_questions');
+            if (saved) {
+                try {
+                    questions = JSON.parse(saved);
+                } catch(e) {
+                    questions = [...DEFAULT_QUESTIONS];
+                }
+            } else {
+                questions = [...DEFAULT_QUESTIONS];
+                saveQuestions();
+            }
+
+            const anxietyMigrationKey = 'refugio_emocional_anxiety_prompts_v1';
+            if (localStorage.getItem(anxietyMigrationKey) !== 'done') {
+                const legacyTitles = {
+                    q1: 'Siento mucha ansiedad y el corazón acelerado',
+                    q6: 'Me abruman los pensamientos negativos repetitivos'
+                };
+                let questionsUpdated = false;
+
+                DEFAULT_QUESTIONS
+                    .filter(question => question.id === 'q1' || question.id === 'q6')
+                    .forEach(defaultQuestion => {
+                        const existingQuestion = questions.find(question => question.id === defaultQuestion.id);
+                        if (existingQuestion && existingQuestion.title === legacyTitles[defaultQuestion.id]) {
+                            existingQuestion.title = defaultQuestion.title;
+                            existingQuestion.script = defaultQuestion.script;
+                            questionsUpdated = true;
+                        }
+                    });
+
+                const newQuestion = DEFAULT_QUESTIONS.find(question => question.id === 'q7');
+                if (!questions.some(question => question.id === newQuestion.id)) {
+                    questions.push(newQuestion);
+                    questionsUpdated = true;
+                }
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(anxietyMigrationKey, 'done');
+            }
+
+            const futureMigrationKey = 'refugio_emocional_future_prompts_v1';
+            if (localStorage.getItem(futureMigrationKey) !== 'done') {
+                const legacyFutureTitle = 'No sé qué hacer con mi futuro ni qué decisión tomar';
+                const defaultFutureQuestion = DEFAULT_QUESTIONS.find(question => question.id === 'q2');
+                const existingFutureQuestion = questions.find(question => question.id === defaultFutureQuestion.id);
+                let questionsUpdated = false;
+
+                if (existingFutureQuestion && existingFutureQuestion.title === legacyFutureTitle) {
+                    existingFutureQuestion.title = defaultFutureQuestion.title;
+                    existingFutureQuestion.script = defaultFutureQuestion.script;
+                    questionsUpdated = true;
+                }
+
+                DEFAULT_QUESTIONS
+                    .filter(question => ['q8', 'q9', 'q10'].includes(question.id))
+                    .forEach(defaultQuestion => {
+                        if (!questions.some(question => question.id === defaultQuestion.id)) {
+                            questions.push(defaultQuestion);
+                            questionsUpdated = true;
+                        }
+                    });
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(futureMigrationKey, 'done');
+            }
+
+            const lonelinessMigrationKey = 'refugio_emocional_loneliness_prompts_v1';
+            if (localStorage.getItem(lonelinessMigrationKey) !== 'done') {
+                const legacyLonelinessTitle = 'Me siento solo/a y siento que nadie me entiende';
+                const defaultLonelinessQuestion = DEFAULT_QUESTIONS.find(question => question.id === 'q3');
+                const existingLonelinessQuestion = questions.find(question => question.id === defaultLonelinessQuestion.id);
+                let questionsUpdated = false;
+
+                if (existingLonelinessQuestion && existingLonelinessQuestion.title === legacyLonelinessTitle) {
+                    existingLonelinessQuestion.title = defaultLonelinessQuestion.title;
+                    existingLonelinessQuestion.script = defaultLonelinessQuestion.script;
+                    questionsUpdated = true;
+                }
+
+                DEFAULT_QUESTIONS
+                    .filter(question => ['q11', 'q12', 'q13'].includes(question.id))
+                    .forEach(defaultQuestion => {
+                        if (!questions.some(question => question.id === defaultQuestion.id)) {
+                            questions.push(defaultQuestion);
+                            questionsUpdated = true;
+                        }
+                    });
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(lonelinessMigrationKey, 'done');
+            }
+
+            const sadnessMigrationKey = 'refugio_emocional_sadness_prompts_v1';
+            if (localStorage.getItem(sadnessMigrationKey) !== 'done') {
+                const legacySadnessTitle = 'Tengo ganas de llorar y no sé cómo desahogarme';
+                const defaultSadnessQuestion = DEFAULT_QUESTIONS.find(question => question.id === 'q4');
+                const existingSadnessQuestion = questions.find(question => question.id === defaultSadnessQuestion.id);
+                let questionsUpdated = false;
+
+                if (existingSadnessQuestion && existingSadnessQuestion.title === legacySadnessTitle) {
+                    existingSadnessQuestion.title = defaultSadnessQuestion.title;
+                    existingSadnessQuestion.script = defaultSadnessQuestion.script;
+                    questionsUpdated = true;
+                }
+
+                DEFAULT_QUESTIONS
+                    .filter(question => ['q14', 'q15', 'q16'].includes(question.id))
+                    .forEach(defaultQuestion => {
+                        if (!questions.some(question => question.id === defaultQuestion.id)) {
+                            questions.push(defaultQuestion);
+                            questionsUpdated = true;
+                        }
+                    });
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(sadnessMigrationKey, 'done');
+            }
+
+            const selfEsteemMigrationKey = 'refugio_emocional_self_esteem_prompts_v1';
+            if (localStorage.getItem(selfEsteemMigrationKey) !== 'done') {
+                const legacySelfEsteemTitle = 'Siento que no soy suficiente o que todo lo hago mal';
+                const defaultSelfEsteemQuestion = DEFAULT_QUESTIONS.find(question => question.id === 'q5');
+                const existingSelfEsteemQuestion = questions.find(question => question.id === defaultSelfEsteemQuestion.id);
+                let questionsUpdated = false;
+
+                if (existingSelfEsteemQuestion && existingSelfEsteemQuestion.title === legacySelfEsteemTitle) {
+                    existingSelfEsteemQuestion.title = defaultSelfEsteemQuestion.title;
+                    existingSelfEsteemQuestion.script = defaultSelfEsteemQuestion.script;
+                    questionsUpdated = true;
+                }
+
+                DEFAULT_QUESTIONS
+                    .filter(question => ['q17', 'q18', 'q19'].includes(question.id))
+                    .forEach(defaultQuestion => {
+                        if (!questions.some(question => question.id === defaultQuestion.id)) {
+                            questions.push(defaultQuestion);
+                            questionsUpdated = true;
+                        }
+                    });
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(selfEsteemMigrationKey, 'done');
+            }
+
+            const forgivenessMigrationKey = 'refugio_emocional_forgiveness_prompts_v1';
+            if (localStorage.getItem(forgivenessMigrationKey) !== 'done') {
+                let questionsUpdated = false;
+
+                DEFAULT_QUESTIONS
+                    .filter(question => ['q20', 'q21', 'q22'].includes(question.id))
+                    .forEach(defaultQuestion => {
+                        if (!questions.some(question => question.id === defaultQuestion.id)) {
+                            questions.push(defaultQuestion);
+                            questionsUpdated = true;
+                        }
+                    });
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(forgivenessMigrationKey, 'done');
+            }
+
+            const hiddenSinMigrationKey = 'refugio_emocional_hidden_sin_prompts_v1';
+            if (localStorage.getItem(hiddenSinMigrationKey) !== 'done') {
+                let questionsUpdated = false;
+
+                DEFAULT_QUESTIONS
+                    .filter(question => ['q23', 'q24', 'q25'].includes(question.id))
+                    .forEach(defaultQuestion => {
+                        if (!questions.some(question => question.id === defaultQuestion.id)) {
+                            questions.push(defaultQuestion);
+                            questionsUpdated = true;
+                        }
+                    });
+
+                if (questionsUpdated) {
+                    saveQuestions();
+                }
+                localStorage.setItem(hiddenSinMigrationKey, 'done');
+            }
+        }
+
+        function saveQuestions() {
+            localStorage.setItem('refugio_emocional_questions', JSON.stringify(questions));
+        }
+
+        // Render Filter Buttons
+        function renderCategoryFilters() {
+            const container = document.getElementById('categoryFilters');
+            const categories = ['Todas', ...new Set([
+                'Ansiedad',
+                'Futuro',
+                'Soledad',
+                'Tristeza',
+                'Autoestima',
+                'Falta de perdón',
+                'Pecados ocultos',
+                ...questions.map(q => q.category)
+            ])];
+
+            container.innerHTML = categories.map(cat => {
+                const isActive = cat === currentCategory;
+                const activeClass = `${isActive ? 'is-active' : ''} ${cat === 'Todas' ? 'is-all' : ''}`;
+
+                return `
+                    <button onclick="setCategory('${cat}')" class="category-filter-button px-4 py-2 rounded-2xl text-xs sm:text-sm font-medium transition-all duration-200 ${activeClass}">
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            renderCategoryFilters();
+            renderQuestions();
+        }
+
+        // Render Questions Grid
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            const emptyState = document.getElementById('noQuestionsState');
+
+            const filtered = currentCategory === 'Todas' 
+                ? questions 
+                : questions.filter(q => q.category === currentCategory);
+
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            container.innerHTML = filtered.map(q => {
+                const theme = THEME_MAP[q.theme] || THEME_MAP.brand;
+                const hasCustomAudio = Boolean(q.audioUrl);
+
+                return `
+                    <div onclick="openAudioModal('${q.id}')" 
+                         class="question-card group relative cursor-pointer p-6 rounded-3xl ${theme.bg} border ${theme.border} transition-all duration-300 hover:scale-[1.02] hover:shadow-xl flex flex-col justify-between space-y-4">
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold ${theme.badgeBg}">
+                                    ${q.category}
+                                </span>
+                                <div class="p-2 rounded-full bg-slate-900/60 text-slate-300 group-hover:text-white transition">
+                                    <i data-lucide="headphones" class="w-4 h-4"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-bold text-slate-100 group-hover:text-white leading-snug">
+                                "${q.title}"
+                            </h3>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-700/30">
+                            ${hasCustomAudio ? `<span class="flex items-center gap-1.5"><i data-lucide="mic" class="w-3.5 h-3.5 ${theme.text}"></i>Audio grabado</span>` : ''}
+                            <span class="text-brand-400 font-semibold group-hover:underline flex items-center gap-1">
+                                Escuchar <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // Initialize Custom Waveform Animation Bars
+        function initWaveformBars() {
+            const container = document.getElementById('waveformContainer');
+            const barCount = 28;
+            container.innerHTML = '';
+            for (let i = 0; i < barCount; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'waveform-bar w-1.5 bg-brand-400/50 rounded-full h-3';
+                container.appendChild(bar);
+            }
+        }
+
+        function animateWaveform(active) {
+            const bars = document.querySelectorAll('.waveform-bar');
+            if (active) {
+                if (!waveformInterval) {
+                    waveformInterval = setInterval(() => {
+                        bars.forEach(bar => {
+                            const randomHeight = Math.floor(Math.random() * 48) + 8;
+                            bar.style.height = `${randomHeight}px`;
+                            bar.classList.add('bg-brand-400');
+                            bar.classList.remove('bg-brand-400/50');
+                        });
+                    }, 150);
+                }
+            } else {
+                clearInterval(waveformInterval);
+                waveformInterval = null;
+                bars.forEach(bar => {
+                    bar.style.height = '12px';
+                    bar.classList.remove('bg-brand-400');
+                    bar.classList.add('bg-brand-400/50');
+                });
+            }
+        }
+
+        function setCommentStatus(message, type = 'info') {
+            const status = document.getElementById('commentFormStatus');
+            status.textContent = message;
+            status.classList.remove('hidden', 'text-slate-300', 'text-rose-400', 'text-emerald-400', 'text-amber-300');
+            status.classList.add(type === 'error' ? 'text-rose-400' : type === 'success' ? 'text-emerald-400' : 'text-amber-300');
+        }
+
+        function initializeSupabaseComments() {
+            const submitButton = document.getElementById('submitCommentBtn');
+            const isConfigured = !SUPABASE_URL.includes('YOUR_PROJECT_ID')
+                && !SUPABASE_ANON_KEY.includes('YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY');
+
+            if (!isConfigured) {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                setCommentStatus('El formulario está pendiente de conectar con Supabase.');
+                return;
+            }
+
+            if (!window.supabase || typeof window.supabase.createClient !== 'function') {
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                setCommentStatus('No se pudo cargar el servicio de comentarios. Recarga la página para intentarlo de nuevo.', 'error');
+                return;
+            }
+
+            try {
+                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                submitButton.disabled = false;
+                submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } catch (error) {
+                console.error('Supabase initialization failed:', error);
+                submitButton.disabled = true;
+                submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+                setCommentStatus('No se pudo conectar el formulario. Revisa la configuración de Supabase.', 'error');
+            }
+        }
+
+        function discardCommentRecording() {
+            clearTimeout(commentRecordingTimer);
+            commentRecordingTimer = null;
+
+            if (commentRecorder) {
+                commentRecorder.ondataavailable = null;
+                commentRecorder.onstop = null;
+                commentRecorder.onerror = null;
+                if (commentRecorder.state !== 'inactive') {
+                    commentRecorder.stop();
+                }
+                commentRecorder = null;
+            }
+
+            if (commentRecordingStream) {
+                commentRecordingStream.getTracks().forEach(track => track.stop());
+                commentRecordingStream = null;
+            }
+
+            recordedCommentAudio = null;
+            const preview = document.getElementById('commentAudioPreview');
+            preview.pause();
+            preview.removeAttribute('src');
+            preview.classList.add('hidden');
+            if (commentAudioPreviewUrl) {
+                URL.revokeObjectURL(commentAudioPreviewUrl);
+                commentAudioPreviewUrl = null;
+            }
+            document.getElementById('startCommentRecordingBtn').disabled = false;
+            document.getElementById('stopCommentRecordingBtn').disabled = true;
+            document.getElementById('commentRecordingStatus').textContent = '';
+        }
+
+        function resetCommentForm() {
+            discardCommentRecording();
+            document.getElementById('commentForm').reset();
+            if (!supabaseClient) {
+                setCommentStatus('El formulario está pendiente de conectar con Supabase.');
+            } else {
+                const status = document.getElementById('commentFormStatus');
+                status.textContent = '';
+                status.classList.add('hidden');
+            }
+        }
+
+        function getCommentAudioMimeType() {
+            const candidates = ['audio/webm;codecs=opus', 'audio/ogg;codecs=opus', 'audio/mp4'];
+            if (typeof MediaRecorder.isTypeSupported !== 'function') return '';
+            return candidates.find(type => MediaRecorder.isTypeSupported(type)) || '';
+        }
+
+        async function startCommentRecording() {
+            const recordingStatus = document.getElementById('commentRecordingStatus');
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined') {
+                recordingStatus.textContent = 'Este navegador no permite grabar audio. Prueba en un navegador actualizado y con HTTPS.';
+                return;
+            }
+
+            try {
+                commentRecordingStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const mimeType = getCommentAudioMimeType();
+                commentRecorder = mimeType
+                    ? new MediaRecorder(commentRecordingStream, { mimeType })
+                    : new MediaRecorder(commentRecordingStream);
+                const recorder = commentRecorder;
+                const chunks = [];
+
+                recorder.ondataavailable = event => {
+                    if (event.data.size > 0) chunks.push(event.data);
+                };
+                recorder.onerror = event => {
+                    console.error('Comment audio recording failed:', event.error);
+                    recordingStatus.textContent = 'Ocurrió un error al grabar. Revisa el permiso del micrófono e inténtalo otra vez.';
+                };
+                recorder.onstop = () => {
+                    clearTimeout(commentRecordingTimer);
+                    commentRecordingTimer = null;
+                    commentRecordingStream.getTracks().forEach(track => track.stop());
+                    commentRecordingStream = null;
+                    commentRecorder = null;
+
+                    const audioType = recorder.mimeType || 'audio/webm';
+                    const audioBlob = new Blob(chunks, { type: audioType });
+                    if (audioBlob.size > 10 * 1024 * 1024) {
+                        recordedCommentAudio = null;
+                        recordingStatus.textContent = 'El audio supera el límite de 10 MB. Graba uno más corto.';
+                        return;
+                    }
+
+                    recordedCommentAudio = audioBlob;
+                    if (commentAudioPreviewUrl) URL.revokeObjectURL(commentAudioPreviewUrl);
+                    commentAudioPreviewUrl = URL.createObjectURL(audioBlob);
+                    const preview = document.getElementById('commentAudioPreview');
+                    preview.src = commentAudioPreviewUrl;
+                    preview.classList.remove('hidden');
+                    recordingStatus.textContent = 'Grabación lista. Puedes escucharla antes de enviarla.';
+                    document.getElementById('startCommentRecordingBtn').disabled = false;
+                    document.getElementById('stopCommentRecordingBtn').disabled = true;
+                };
+
+                recorder.start();
+                document.getElementById('startCommentRecordingBtn').disabled = true;
+                document.getElementById('stopCommentRecordingBtn').disabled = false;
+                recordingStatus.textContent = 'Grabando… máximo 60 segundos.';
+                commentRecordingTimer = setTimeout(stopCommentRecording, 60_000);
+            } catch (error) {
+                console.error('Could not access microphone:', error);
+                if (commentRecordingStream) {
+                    commentRecordingStream.getTracks().forEach(track => track.stop());
+                    commentRecordingStream = null;
+                }
+                commentRecorder = null;
+                document.getElementById('startCommentRecordingBtn').disabled = false;
+                document.getElementById('stopCommentRecordingBtn').disabled = true;
+                recordingStatus.textContent = 'No se pudo iniciar el micrófono. Revisa los permisos del navegador e inténtalo otra vez.';
+            }
+        }
+
+        function stopCommentRecording() {
+            clearTimeout(commentRecordingTimer);
+            commentRecordingTimer = null;
+            if (commentRecorder && commentRecorder.state === 'recording') {
+                document.getElementById('commentRecordingStatus').textContent = 'Procesando grabación…';
+                commentRecorder.stop();
+            }
+        }
+
+        async function submitComment(event) {
+            event.preventDefault();
+            if (!supabaseClient) {
+                setCommentStatus('El formulario aún no está conectado a Supabase.', 'error');
+                return;
+            }
+
+            const fullName = document.getElementById('commentName').value.trim();
+            const commentText = document.getElementById('commentText').value.trim();
+            if (commentRecorder && commentRecorder.state === 'recording') {
+                setCommentStatus('Detén la grabación antes de enviar el comentario.', 'error');
+                return;
+            }
+            if (!commentText && !recordedCommentAudio) {
+                setCommentStatus('Escribe un comentario o graba un audio antes de enviar.', 'error');
+                return;
+            }
+            if (recordedCommentAudio && recordedCommentAudio.size > 10 * 1024 * 1024) {
+                setCommentStatus('El audio supera el límite de 10 MB. Graba uno más corto.', 'error');
+                return;
+            }
+            if (!activeQuestion) {
+                setCommentStatus('No se encontró la pregunta asociada. Cierra y vuelve a abrir el reproductor.', 'error');
+                return;
+            }
+
+            const submitButton = document.getElementById('submitCommentBtn');
+            submitButton.disabled = true;
+            setCommentStatus('Enviando de forma privada…');
+
+            try {
+                let audioPath = null;
+                if (recordedCommentAudio) {
+                    if (!window.crypto || typeof window.crypto.randomUUID !== 'function') {
+                        throw new Error('Este navegador no permite crear un identificador seguro para el audio.');
+                    }
+
+                    const mimeType = recordedCommentAudio.type.split(';')[0] || 'audio/webm';
+                    const extensions = { 'audio/webm': 'webm', 'audio/ogg': 'ogg', 'audio/mp4': 'mp4' };
+                    const extension = extensions[mimeType];
+                    if (!extension) {
+                        throw new Error('El formato de audio grabado no es compatible.');
+                    }
+
+                    audioPath = `${window.crypto.randomUUID()}.${extension}`;
+                    const { error: uploadError } = await supabaseClient
+                        .storage
+                        .from(SUPABASE_COMMENTS_BUCKET)
+                        .upload(audioPath, recordedCommentAudio, { contentType: mimeType, upsert: false });
+                    if (uploadError) throw uploadError;
+                }
+
+                const { error: insertError } = await supabaseClient
+                    .from('private_comments')
+                    .insert({
+                        question_category: activeQuestion.category,
+                        question_title: activeQuestion.title,
+                        full_name: fullName,
+                        comment_text: commentText || null,
+                        audio_path: audioPath
+                    });
+                if (insertError) throw insertError;
+
+                document.getElementById('commentForm').reset();
+                discardCommentRecording();
+                setCommentStatus('Gracias por compartir. Tu comentario se envió de forma privada.', 'success');
+            } catch (error) {
+                console.error('Private comment submission failed:', error);
+                setCommentStatus('No se pudo enviar el comentario. Revisa tu conexión e inténtalo otra vez.', 'error');
+            } finally {
+                submitButton.disabled = false;
+            }
+        }
+
+        // Open Modal and Play Audio
+        function openAudioModal(id) {
+            activeQuestion = questions.find(q => q.id === id);
+            if (!activeQuestion) return;
+            resetCommentForm();
+
+            // Set modal info
+            document.getElementById('modalCategoryBadge').textContent = activeQuestion.category;
+            document.getElementById('modalQuestionTitle').textContent = `"${activeQuestion.title}"`;
+
+            const modal = document.getElementById('audioModal');
+            const card = document.getElementById('audioModalCard');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                card.classList.remove('scale-95');
+            }, 10);
+
+            // Prepare audio source
+            if (activeQuestion.audioUrl) {
+                isTTSActive = false;
+                audioObject.src = activeQuestion.audioUrl;
+                audioObject.playbackRate = playbackSpeed;
+            } else {
+                isTTSActive = true;
+                audioObject.src = '';
+            }
+
+            resetPlaybackState();
+            playAudio();
+        }
+
+        function closeAudioModal() {
+            stopAudio();
+            resetCommentForm();
+            const modal = document.getElementById('audioModal');
+            const card = document.getElementById('audioModalCard');
+            modal.classList.add('opacity-0');
+            card.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Audio Playback Controls logic
+        function playAudio() {
+            isPlaying = true;
+            updatePlayIcon();
+            animateWaveform(true);
+
+            if (isTTSActive) {
+                playTTS(activeQuestion.script);
+            } else {
+                audioObject.play().catch(e => {
+                    console.warn('Audio play failed, falling back to TTS:', e);
+                    isTTSActive = true;
+                    playTTS(activeQuestion.script);
+                });
+            }
+        }
+
+        function pauseAudio() {
+            isPlaying = false;
+            updatePlayIcon();
+            animateWaveform(false);
+
+            if (isTTSActive) {
+                window.speechSynthesis.pause();
+            } else {
+                audioObject.pause();
+            }
+        }
+
+        function stopAudio() {
+            isPlaying = false;
+            updatePlayIcon();
+            animateWaveform(false);
+
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            audioObject.pause();
+            audioObject.currentTime = 0;
+        }
+
+        function togglePlayPause() {
+            if (isPlaying) {
+                pauseAudio();
+            } else {
+                playAudio();
+            }
+        }
+
+        function updatePlayIcon() {
+            const playIcon = document.getElementById('playIcon');
+            const pauseIcon = document.getElementById('pauseIcon');
+            if (isPlaying) {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            } else {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            }
+        }
+
+        // Web Speech API (TTS Fallback)
+        function playTTS(text) {
+            if (!('speechSynthesis' in window)) {
+                alert('Tu navegador no soporta sintetizador de voz.');
+                return;
+            }
+
+            window.speechSynthesis.cancel();
+
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            currentUtterance.lang = 'es-ES';
+            currentUtterance.rate = playbackSpeed * 0.9; // Slightly slower for calming effect
+
+            // Try selecting a Spanish voice
+            const voices = window.speechSynthesis.getVoices();
+            const esVoice = voices.find(v => v.lang.startsWith('es'));
+            if (esVoice) currentUtterance.voice = esVoice;
+
+            currentUtterance.onend = () => {
+                isPlaying = false;
+                updatePlayIcon();
+                animateWaveform(false);
+                document.getElementById('currentTimeDisplay').textContent = document.getElementById('durationDisplay').textContent;
+                document.getElementById('seekBar').value = 100;
+            };
+
+            // Estimate duration based on word count (~150 words per minute)
+            const words = text.split(' ').length;
+            const estimatedDuration = Math.max(Math.ceil((words / 150) * 60), 5);
+            document.getElementById('durationDisplay').textContent = formatTime(estimatedDuration);
+
+            window.speechSynthesis.speak(currentUtterance);
+
+            // Simulate progress bar for TTS
+            simulateTTSProgress(estimatedDuration);
+        }
+
+        let ttsProgressInterval = null;
+        function simulateTTSProgress(duration) {
+            clearInterval(ttsProgressInterval);
+            let elapsed = 0;
+            document.getElementById('currentTimeDisplay').textContent = formatTime(0);
+
+            ttsProgressInterval = setInterval(() => {
+                if (!isPlaying || !isTTSActive) {
+                    clearInterval(ttsProgressInterval);
+                    return;
+                }
+                elapsed += 0.5;
+                if (elapsed > duration) {
+                    clearInterval(ttsProgressInterval);
+                    return;
+                }
+                document.getElementById('currentTimeDisplay').textContent = formatTime(elapsed);
+                document.getElementById('seekBar').value = (elapsed / duration) * 100;
+            }, 500);
+        }
+
+        // Setup HTML5 Audio Events
+        function setupAudioEvents() {
+            audioObject.addEventListener('timeupdate', () => {
+                if (isTTSActive || !audioObject.duration) return;
+                const current = audioObject.currentTime;
+                const total = audioObject.duration;
+                document.getElementById('currentTimeDisplay').textContent = formatTime(current);
+                document.getElementById('durationDisplay').textContent = formatTime(total);
+                document.getElementById('seekBar').value = (current / total) * 100;
+            });
+
+            audioObject.addEventListener('ended', () => {
+                isPlaying = false;
+                updatePlayIcon();
+                animateWaveform(false);
+            });
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function resetPlaybackState() {
+            document.getElementById('seekBar').value = 0;
+            document.getElementById('currentTimeDisplay').textContent = '00:00';
+            document.getElementById('durationDisplay').textContent = '00:00';
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Audio Controls
+            document.getElementById('playPauseBtn').addEventListener('click', togglePlayPause);
+            document.getElementById('closeAudioModalBtn').addEventListener('click', closeAudioModal);
+            document.getElementById('commentForm').addEventListener('submit', submitComment);
+            document.getElementById('startCommentRecordingBtn').addEventListener('click', startCommentRecording);
+            document.getElementById('stopCommentRecordingBtn').addEventListener('click', stopCommentRecording);
+            
+            document.getElementById('replay10Btn').addEventListener('click', () => {
+                if (isTTSActive) {
+                    playAudio(); // Restart TTS
+                } else {
+                    audioObject.currentTime = Math.max(0, audioObject.currentTime - 10);
+                }
+            });
+
+            // Speed toggle
+            document.getElementById('speedBtn').addEventListener('click', () => {
+                const speeds = [1.0, 1.25, 1.5, 0.8];
+                const currentIndex = speeds.indexOf(playbackSpeed);
+                playbackSpeed = speeds[(currentIndex + 1) % speeds.length];
+                document.getElementById('speedBtn').textContent = `${playbackSpeed}x`;
+                audioObject.playbackRate = playbackSpeed;
+                if (isTTSActive && isPlaying) playAudio(); // Restart with new rate
+            });
+
+            // Volume slider
+            document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                audioObject.volume = e.target.value;
+            });
+
+            // Seek bar
+            document.getElementById('seekBar').addEventListener('input', (e) => {
+                if (!isTTSActive && audioObject.duration) {
+                    const seekTo = (e.target.value / 100) * audioObject.duration;
+                    audioObject.currentTime = seekTo;
+                }
+            });
+
+            // Admin Authentication Modal
+            document.getElementById('adminBtn').addEventListener('click', () => {
+                document.getElementById('adminPinModal').classList.remove('hidden');
+                document.getElementById('pinInput').focus();
+            });
+
+            document.getElementById('cancelPinBtn').addEventListener('click', () => {
+                document.getElementById('adminPinModal').classList.add('hidden');
+                document.getElementById('pinError').classList.add('hidden');
+                document.getElementById('pinInput').value = '';
+            });
+
+            document.getElementById('pinForm').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const pin = document.getElementById('pinInput').value;
+                if (pin === 'Nery94') {
+                    document.getElementById('adminPinModal').classList.add('hidden');
+                    document.getElementById('pinError').classList.add('hidden');
+                    document.getElementById('pinInput').value = '';
+                    openAdminPanel();
+                } else {
+                    document.getElementById('pinError').classList.remove('hidden');
+                }
+            });
+
+            document.getElementById('closeAdminPanelBtn').addEventListener('click', () => {
+                document.getElementById('adminPanelModal').classList.add('hidden');
+            });
+
+            // Form Handlers
+            document.getElementById('questionForm').addEventListener('submit', handleFormSubmit);
+            document.getElementById('cancelEditBtn').addEventListener('click', resetForm);
+            document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+                if (confirm('¿Restablecer todas las preguntas a la configuración por defecto?')) {
+                    questions = [...DEFAULT_QUESTIONS];
+                    saveQuestions();
+                    renderCategoryFilters();
+                    renderQuestions();
+                    renderAdminTable();
+                }
+            });
+        }
+
+        // Admin Panel Rendering and Management
+        function openAdminPanel() {
+            document.getElementById('adminPanelModal').classList.remove('hidden');
+            renderAdminTable();
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminTableBody');
+            tbody.innerHTML = questions.map(q => `
+                <tr class="hover:bg-slate-800/40 transition">
+                    <td class="px-4 py-3">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-800 text-slate-300">
+                            ${q.category}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 font-medium text-white max-w-xs truncate">
+                        ${q.title}
+                    </td>
+                    <td class="px-4 py-3 text-xs">
+                        ${q.audioUrl 
+                            ? '<span class="text-teal-400 font-semibold flex items-center gap-1"><i data-lucide="file-audio" class="w-3.5 h-3.5"></i> Personalizado</span>' 
+                            : '<span class="text-amber-400 flex items-center gap-1"><i data-lucide="bot" class="w-3.5 h-3.5"></i> Voz Sintetizada</span>'}
+                    </td>
+                    <td class="px-4 py-3 text-right">
+                        <div class="flex items-center justify-end gap-2">
+                            <button onclick="editQuestion('${q.id}')" class="p-1.5 text-slate-400 hover:text-brand-400 bg-slate-800 hover:bg-slate-700 rounded-lg transition" title="Editar">
+                                <i data-lucide="pencil" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="deleteQuestion('${q.id}')" class="p-1.5 text-slate-400 hover:text-rose-400 bg-slate-800 hover:bg-slate-700 rounded-lg transition" title="Eliminar">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // Form Submit (Add / Edit Question)
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const editId = document.getElementById('editQuestionId').value;
+            const category = document.getElementById('formCategory').value.trim();
+            const theme = document.getElementById('formTheme').value;
+            const title = document.getElementById('formTitleInput').value.trim();
+            const script = document.getElementById('formScript').value.trim();
+            const fileInput = document.getElementById('formAudioFile');
+            const urlInput = document.getElementById('formAudioUrl').value.trim();
+
+            let audioUrl = urlInput;
+
+            // Handle FileReader if local file uploaded
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                audioUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            if (editId) {
+                // Update
+                const index = questions.findIndex(q => q.id === editId);
+                if (index !== -1) {
+                    questions[index] = {
+                        ...questions[index],
+                        category,
+                        theme,
+                        title,
+                        script,
+                        audioUrl: audioUrl || questions[index].audioUrl
+                    };
+                }
+            } else {
+                // Add New
+                const newQ = {
+                    id: 'q_' + Date.now(),
+                    category,
+                    theme,
+                    title,
+                    script,
+                    audioUrl
+                };
+                questions.unshift(newQ);
+            }
+
+            saveQuestions();
+            resetForm();
+            renderCategoryFilters();
+            renderQuestions();
+            renderAdminTable();
+        }
+
+        function editQuestion(id) {
+            const q = questions.find(item => item.id === id);
+            if (!q) return;
+
+            document.getElementById('editQuestionId').value = q.id;
+            document.getElementById('formCategory').value = q.category;
+            document.getElementById('formTheme').value = q.theme;
+            document.getElementById('formTitleInput').value = q.title;
+            document.getElementById('formScript').value = q.script;
+            document.getElementById('formAudioUrl').value = q.audioUrl && !q.audioUrl.startsWith('data:') ? q.audioUrl : '';
+            
+            document.getElementById('formTitle').querySelector('span').textContent = 'Editar Pregunta';
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+        }
+
+        function resetForm() {
+            document.getElementById('questionForm').reset();
+            document.getElementById('editQuestionId').value = '';
+            document.getElementById('formTitle').querySelector('span').textContent = 'Agregar Nueva Pregunta / Audio';
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+        }
+
+        function deleteQuestion(id) {
+            if (confirm('¿Estás seguro/a de que deseas eliminar esta pregunta?')) {
+                questions = questions.filter(q => q.id !== id);
+                saveQuestions();
+                renderCategoryFilters();
+                renderQuestions();
+                renderAdminTable();
+            }
+        }
+    </script>
+</body>
+</html>
