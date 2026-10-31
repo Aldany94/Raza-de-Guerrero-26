@@ -721,7 +721,7 @@
                 theme: 'purple',
                 title: '¿Sientes que el rencor o el enojo hacia alguien te está quemando por dentro y te cuesta mucho perdonarlo/a?',
                 script: 'El enojo y el rencor pueden pesar mucho. No tienes que apresurarte a perdonar ni minimizar lo que pasó. Date tiempo para procesarlo y busca apoyo de alguien de confianza. Perdonar no significa justificar el daño ni renunciar a poner límites.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%206.mp3'
             },
             {
                 id: 'q21',
@@ -1049,6 +1049,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(selfForgivenessAudioMigrationKey, 'done');
+            }
+
+            const resentmentAudioMigrationKey = 'refugio_emocional_resentment_audio_v1';
+            if (localStorage.getItem(resentmentAudioMigrationKey) !== 'done') {
+                const resentmentQuestion = questions.find(question => question.id === 'q20');
+                if (resentmentQuestion && (!resentmentQuestion.audioUrl || resentmentQuestion.audioUrl === 'Audio 6.mp3')) {
+                    resentmentQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q20').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(resentmentAudioMigrationKey, 'done');
             }
         }
 
