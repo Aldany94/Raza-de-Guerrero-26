@@ -601,7 +601,7 @@
                 theme: 'amber',
                 title: '¿Te miras al espejo y te cuesta aceptar tu cuerpo, tu físico o la forma en que te ves?',
                 script: 'Tu valor no depende de tu apariencia ni de cumplir con un ideal. Intenta hablarte con la misma amabilidad que ofrecerías a alguien que quieres. Si estos pensamientos te hacen sufrir, considera compartirlo con una persona de confianza.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%209.mp3'
             },
             {
                 id: 'q6',
@@ -1079,6 +1079,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(socialComparisonAudioMigrationKey, 'done');
+            }
+
+            const bodyImageAudioMigrationKey = 'refugio_emocional_body_image_audio_v1';
+            if (localStorage.getItem(bodyImageAudioMigrationKey) !== 'done') {
+                const bodyImageQuestion = questions.find(question => question.id === 'q5');
+                if (bodyImageQuestion && (!bodyImageQuestion.audioUrl || bodyImageQuestion.audioUrl === 'Audio 9.mp3')) {
+                    bodyImageQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q5').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(bodyImageAudioMigrationKey, 'done');
             }
         }
 
