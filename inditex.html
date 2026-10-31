@@ -761,7 +761,7 @@
                 theme: 'purple',
                 title: '¿Sientes que la culpa y los errores ocultos te persiguen y te hacen sentir indigno/a de acercarte a Dios?',
                 script: 'La culpa no significa que seas indigno/a de recibir ayuda o acercarte a Dios. Puedes reconocer lo ocurrido, buscar reparar el daño cuando sea posible y pedir apoyo para seguir adelante. No tienes que resolverlo todo de una vez; da un paso a la vez.',
-                audioUrl: 'Audio 1.mp3'
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%201.mp3'
             }
         ];
 
@@ -1001,10 +1001,10 @@
                 localStorage.setItem(hiddenSinMigrationKey, 'done');
             }
 
-            const guiltAudioMigrationKey = 'refugio_emocional_guilt_audio_v1';
+            const guiltAudioMigrationKey = 'refugio_emocional_guilt_audio_v2';
             if (localStorage.getItem(guiltAudioMigrationKey) !== 'done') {
                 const guiltQuestion = questions.find(question => question.id === 'q25');
-                if (guiltQuestion && !guiltQuestion.audioUrl) {
+                if (guiltQuestion && (!guiltQuestion.audioUrl || guiltQuestion.audioUrl === 'Audio 1.mp3')) {
                     guiltQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q25').audioUrl;
                     saveQuestions();
                 }
