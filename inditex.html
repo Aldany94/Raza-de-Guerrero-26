@@ -737,7 +737,7 @@
                 theme: 'purple',
                 title: '¿Te cuesta perdonarte a ti mismo/a por un error del pasado y sigues cargando con esa culpa?',
                 script: 'Reconocer un error puede ser doloroso, pero no tienes que quedar definido/a por lo que pasó. Si es posible, considera reparar el daño y aprender de la experiencia. Trátate con paciencia y busca apoyo; también mereces la oportunidad de seguir adelante.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%205.mp3'
             },
             {
                 id: 'q23',
@@ -1039,6 +1039,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(betrayalAudioMigrationKey, 'done');
+            }
+
+            const selfForgivenessAudioMigrationKey = 'refugio_emocional_self_forgiveness_audio_v1';
+            if (localStorage.getItem(selfForgivenessAudioMigrationKey) !== 'done') {
+                const selfForgivenessQuestion = questions.find(question => question.id === 'q22');
+                if (selfForgivenessQuestion && (!selfForgivenessQuestion.audioUrl || selfForgivenessQuestion.audioUrl === 'Audio 5.mp3')) {
+                    selfForgivenessQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q22').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(selfForgivenessAudioMigrationKey, 'done');
             }
         }
 
