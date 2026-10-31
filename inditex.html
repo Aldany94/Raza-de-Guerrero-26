@@ -745,7 +745,7 @@
                 theme: 'purple',
                 title: '¿Te sientes atrapado/a en un hábito o pecado secreto que temes que los demás descubran?',
                 script: 'Sentirte atrapado/a en un hábito puede ser difícil, pero no tienes que enfrentarlo sin apoyo. Hablar con una persona confiable, un consejero o un profesional puede ayudarte a dar pasos seguros y concretos. Tu dignidad no desaparece por estar luchando.',
-                audioUrl: ''
+                audioUrl: 'https://raw.githubusercontent.com/Aldany94/Raza-de-Guerrero-26/main/Audio%202.mp3'
             },
             {
                 id: 'q24',
@@ -1009,6 +1009,16 @@
                     saveQuestions();
                 }
                 localStorage.setItem(guiltAudioMigrationKey, 'done');
+            }
+
+            const hiddenSinAudioMigrationKey = 'refugio_emocional_hidden_sin_audio_v1';
+            if (localStorage.getItem(hiddenSinAudioMigrationKey) !== 'done') {
+                const hiddenSinQuestion = questions.find(question => question.id === 'q23');
+                if (hiddenSinQuestion && (!hiddenSinQuestion.audioUrl || hiddenSinQuestion.audioUrl === 'Audio 2.mp3')) {
+                    hiddenSinQuestion.audioUrl = DEFAULT_QUESTIONS.find(question => question.id === 'q23').audioUrl;
+                    saveQuestions();
+                }
+                localStorage.setItem(hiddenSinAudioMigrationKey, 'done');
             }
         }
 
